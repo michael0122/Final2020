@@ -1,7 +1,7 @@
 ---
 title: "Covid91 vaccine study Final2021"
-author: "Put your name here!"
-date: "put the date here"
+author: "Michael Abdalla"
+date: "7/22/2021"
 output: 
     html_document:
     toc: true
@@ -25,15 +25,133 @@ FinalData$DrugUser <- as.factor(FinalData$DrugUser)
 
 A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups by gender( guys and gals), drug use, and sexual orientation. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
 
+# Methods
+
+```{r}
+Maledata <- filter(FinalData, sex == "guy")
+Maledata$sex <- as.factor(Maledata$sex)
+Maledata$treatment <- as.factor(Maledata$treatment)
+```
+
 
 # Guys "sex = guy"
 
 
+```{r}
+Guys <- Maledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(Guys,aes(x=treatment,y=count,fill=infected))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(Guys,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the placebo   
+
+```{r}
+table1 <- xtabs(~treatment + infected, data=Maledata)
+rowPerc(table1)
+colPerc(table1)
+print(table1)
+```
+
+this table illustrates that 3.72% of the guys who received the covid drug has gotten covid however 2.55% of the Guys who has been treated with the placebo were able to contract covid. In this data it is shown that 50% of the males who received the vaccine are most likely to get affected with covid as that shows that the vaccine is not effective on guys. 
+
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+fisher.test(table1)
+```
+
+here it's shown that the p-value is such a tiny number which is 0.0006181 hen we will reject the null hypothesis because it shows that there is no difference between the guys who have taken the vaccine and the guys who havn't in terms of contracting the covid. 
+
 # Gals "sex = gal"
 
+```{r}
+Femaledata <- filter(FinalData, sex == "gal")
+Femaledata$sex <- as.factor(Femaledata$sex)
+Femaledata$infected = factor(Femaledata$infected)
+Femaledata$infected <- relevel(Femaledata$infected, "OK")
+levels(Femaledata$infected)
+```
+
+
+```{r}
+gals <- Femaledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(gals,aes(x=treatment,y=count,fill=infected))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(gals,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+
+```{r}
+table2 <- xtabs(~treatment + infected, data=Femaledata)
+rowPerc(table2)
+colPerc(table2)
+print(table2)
+```
+
+```{r}
+chisq.test(table2)
+chisqtestGC(table2)
+fisher.test(table2)
+```
 
 # Sexual orintation "LGBTQ = gay"
 
+
+```{r}
+LGBTQdata <- filter(FinalData, LGBTQ == "gay")
+LGBTQdata$DrugUser <- as.factor(LGBTQdata$LGBTQ)
+LGBTQdata$infected <- as.factor(LGBTQdata$infected)
+LGBTQdata$infected <- relevel(LGBTQdata$infected, "OK")
+```
+
+
+```{r}
+LGBTQ <- LGBTQdata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(LGBTQ,aes(x=treatment,y=count,fill=infected))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(LGBTQ,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+
+
+```{r}
+table3 <- xtabs(~treatment + infected, data=LGBTQdata)
+rowPerc(table3)
+colPerc(table3)
+print(table3)
+```
+
+```{r}
+chisq.test(table3)
+chisqtestGC(table3)
+fisher.test(table3)
+```
 
 # Drug Users "Drug User = yes"
 
