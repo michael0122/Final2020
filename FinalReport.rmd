@@ -59,7 +59,7 @@ basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
-the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the placebo
+the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the 
 
 
 ## Numerical Results    
