@@ -1,10 +1,13 @@
 ---
-title: "Covid91 vaccine study Final2021"
-author: "Michael Abdalla"
-date: "7/22/2021"
+title: "Snippets"
+author: "Dr K"
 output: 
-    html_document:
+  html_document:
+    number_sections: true
     toc: true
+    toc_depth: 5
+date: "`r Sys.Date()`"    
+    
 ---
 
 ```{r include=FALSE,echo=FALSE}
@@ -14,18 +17,21 @@ require(forcats)
 OldData <-read.csv(file="covid91.csv",header=TRUE)
 #recode to remove the annoying "X" from the dataframe
 FinalData <- OldData %>% mutate(infected = recode(infected, aids = "covid", none = "OK" )) %>% select(-one_of("X"))
-FinalData$treatment <- as.factor(FinalData$treatment)
-FinalData$sex <- as.factor(FinalData$sex)
-FinalData$infected <- as.factor(FinalData$infected)
-FinalData$LGBTQ <- as.factor(FinalData$LGBTQ)
-FinalData$DrugUser <- as.factor(FinalData$DrugUser)
+FinalData <- FinalData %>%
+mutate(across(where(is.character), as.factor))
+##FinalData$treatment <- relevel(FinalData$treatment,ref="placebo")
+FinalData$infected <- relevel(FinalData$infected,ref="OK")
+guy = filter(FinalData, sex == "guy")
+gal = filter(FinalData, sex == "gal")
+gay = filter(FinalData, LGBTQ == "gay")
+Druguser = filter(FinalData, DrugUser == "yes")
 ```
 
-# Introduction
+# Introduction  
 
 A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups by gender( guys and gals), drug use, and sexual orientation. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
 
-# Methods
+# Coding Details  
 
 ```{r}
 Maledata <- filter(FinalData, sex == "guy")
@@ -34,45 +40,68 @@ Maledata$treatment <- as.factor(Maledata$treatment)
 ```
 
 
-# Guys "sex = guy"
+# Guys   
 
+## Barplot   
 
 ```{r}
-Guys <- Maledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+dd2 <- guy %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
 
 
 # the group_by followed by summarize(count=n())
 
-basicC <- ggplot(Guys,aes(x=treatment,y=count,fill=infected))
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
 basicC + geom_bar(stat="identity",position="dodge")
 
 #Now for percentage plot
 
-basicCC <- ggplot(Guys,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment)) 
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
-the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the placebo   
+the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the placebo
+
+
+## Numerical Results    
 
 ```{r}
-table1 <- xtabs(~treatment + infected, data=Maledata)
+table1 <- xtabs(~infected + treatment, data=guy)
 rowPerc(table1)
 colPerc(table1)
-print(table1)
+```
+
+this is the H 0 which is the null hypothesis 1.473872  so the vaccine is not effective so we will reject the null hypothesis. 
+
+
+## Inferarential    
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+guysfish <- fisher.test(table1)
+guysfish
 ```
 
 this table illustrates that 3.72% of the guys who received the covid drug has gotten covid however 2.55% of the Guys who has been treated with the placebo were able to contract covid. In this data it is shown that 50% of the males who received the vaccine are most likely to get affected with covid as that shows that the vaccine is not effective on guys. 
 
 
 ```{r}
-chisq.test(table1)
-chisqtestGC(table1)
-fisher.test(table1)
+effect <- guysfish$p.value/(guysfish$p.value  +1)
+effectiveness =  guysfish$estimate/(guysfish$estimate+1)
+print(effectiveness*100)
 ```
 
-here it's shown that the p-value is such a tiny number which is 0.0006181 hen we will reject the null hypothesis because it shows that there is no difference between the guys who have taken the vaccine and the guys who havn't in terms of contracting the covid. 
+```{r}
+low=(guysfish$conf.int[1]/(guysfish$conf.int[1] +1))
+hi=(guysfish$conf.int[2]/(guysfish$conf.int[2] +1))
+options(digits=2)
+```
 
-# Gals "sex = gal"
+## ## Effectiveness Confidence Interval `r low`  to `r hi`
+
+
+
+# Gals 
 
 ```{r}
 Femaledata <- filter(FinalData, sex == "gal")
