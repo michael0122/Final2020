@@ -70,7 +70,7 @@ rowPerc(table1)
 colPerc(table1)
 ```
 
-this is the H 0 which is the null hypothesis 1.473872  so the vaccine is not effective so we will reject the null hypothesis. 
+this is the H 0 which is the null hypothesis 1.473872  so the vaccine is not effective so we will reject the null hypothesis.
 
 
 ## Inferarential    
