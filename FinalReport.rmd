@@ -39,38 +39,56 @@ Maledata$sex <- as.factor(Maledata$sex)
 Maledata$treatment <- as.factor(Maledata$treatment)
 ```
 
+```{r}
+Femaledata <- filter(FinalData, sex == "gal")
+Femaledata$sex <- as.factor(Femaledata$sex)
+Femaledata$treatment <- as.factor(Femaledata$treatment)
+```
+
+```{r}
+LGBTQdata <- filter(FinalData, LGBTQ == "gay")
+LGBTQdata$sex <- as.factor(LGBTQdata$sex)
+LGBTQdata$treatment <- as.factor(LGBTQdata$treatment)
+```
+
+```{r}
+DrugUserdata <- filter(FinalData, DrugUser == "yes")
+DrugUserdata$sex <- as.factor(DrugUserdata$sex)
+DrugUserdata$treatment <- as.factor(DrugUserdata$treatment)
+```
 
 # Guys   
 
 ## Barplot   
 
 ```{r}
-dd2 <- guy %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+guy <- Maledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
 
 
 # the group_by followed by summarize(count=n())
 
-basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC <- ggplot(guy,aes(x=infected,y=count,fill=treatment))
 basicC + geom_bar(stat="identity",position="dodge")
 
 #Now for percentage plot
 
-basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC <- ggplot(guy,aes(x=infected,y=prcnt*100,fill=treatment)) 
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
-the barchart is showing that 337 people were infected with covid19 and almost 58% were infected when they got the drug and about 42% were infected have received the placebo 
+the barchart is showing from he males who were infected with covid19 almost 58% were given the drug and about 42% received the placebo 
 
 
 ## Numerical Results    
 
 ```{r}
-table1 <- xtabs(~infected + treatment, data=guy)
+table1 <- xtabs(~treatment + infected, data=Maledata)
 rowPerc(table1)
 colPerc(table1)
+print(table1)
 ```
 
-this is the H 0 which is the null hypothesis 1.473872  so the vaccine is not effective so we will reject the null hypothesis.
+this table shows that about 340 males were infected with covid-19 out of 10,450 males. this table also shows that 3.7% of the males who have received the drug contracted covid-19 while 2.5% of the males who received the placebo contracted covid-19 as well as the table shows that males who got the covid vaccine were almost 50% were more likly to contract covid and because it's less that 60% that shows that the vaccine is not effective for males.
 
 
 ## Inferarential    
@@ -82,13 +100,18 @@ guysfish <- fisher.test(table1)
 guysfish
 ```
 
-this table illustrates that 3.72% of the guys who received the covid drug has gotten covid however 2.55% of the Guys who has been treated with the placebo were able to contract covid. In this data it is shown that 50% of the males who received the vaccine are most likely to get affected with covid as that shows that the vaccine is not effective on guys. 
+since the p-value is a very tiny number 
+$H_0$ the null hypothesis is that the vaccine makes no difference in males when it comes to contracting the covid-19.
+
+$H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not a male contracts covid-19.
+
+we will reject the null hypothesis. 
 
 
 ```{r}
 effect <- guysfish$p.value/(guysfish$p.value  +1)
-effectiveness =  guysfish$estimate/(guysfish$estimate+1)
-print(effectiveness*100)
+effectivenessguy =  guysfish$estimate/(guysfish$estimate+1)
+print(effectivenessguy*100)
 ```
 
 ```{r}
@@ -103,72 +126,83 @@ options(digits=2)
 
 # Gals 
 
-```{r}
-Femaledata <- filter(FinalData, sex == "gal")
-Femaledata$sex <- as.factor(Femaledata$sex)
-Femaledata$infected = factor(Femaledata$infected)
-Femaledata$infected <- relevel(Femaledata$infected, "OK")
-levels(Femaledata$infected)
-```
+## Barplot
 
 
 ```{r}
-gals <- Femaledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+gal <- Femaledata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
 
 
 # the group_by followed by summarize(count=n())
 
-basicC <- ggplot(gals,aes(x=treatment,y=count,fill=infected))
+basicC <- ggplot(gal,aes(x=infected,y= count,fill=treatment))
 basicC + geom_bar(stat="identity",position="dodge")
 
 #Now for percentage plot
 
-basicCC <- ggplot(gals,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC <- ggplot(gal,aes(x=infected,y=prcnt*100,fill=treatment)) 
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
+## Numerical Results 
 
 ```{r}
-table2 <- xtabs(~treatment + infected, data=Femaledata)
+table2 <- xtabs(~infected + treatment, data=Femaledata)
 rowPerc(table2)
 colPerc(table2)
 print(table2)
 ```
 
+## Infrarertial 
+
 ```{r}
 chisq.test(table2)
 chisqtestGC(table2)
-fisher.test(table2)
+galsfish <- fisher.test(table2)
+galsfish
 ```
 
-# Sexual orintation "LGBTQ = gay"
+the vaccine is effective for gals to take the vaccine. 
+
+```{r}
+effect <- galsfish$p.value/(galsfish$p.value  +1)
+effectivenessgal = galsfish$estimate/(galsfish$estimate+1)
+print(effectivenessgal*100)
+```
+
+```{r}
+low=(galsfish$conf.int[1]/(galsfish$conf.int[1] +1))
+hi=(galsfish$conf.int[2]/(galsfish$conf.int[2] +1))
+options(digits=2)
+```
+
+## ## Effectiveness Confidence Interval `r low`  to `r hi`
+
+
+# Gay sexual orintation 
+
+## Barplot
+
+
 
 
 ```{r}
-LGBTQdata <- filter(FinalData, LGBTQ == "gay")
-LGBTQdata$DrugUser <- as.factor(LGBTQdata$LGBTQ)
-LGBTQdata$infected <- as.factor(LGBTQdata$infected)
-LGBTQdata$infected <- relevel(LGBTQdata$infected, "OK")
-```
-
-
-```{r}
-LGBTQ <- LGBTQdata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+gay <- LGBTQdata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
 
 
 # the group_by followed by summarize(count=n())
 
-basicC <- ggplot(LGBTQ,aes(x=treatment,y=count,fill=infected))
+basicC <- ggplot(gay,aes(x=treatment,y=count,fill=infected))
 basicC + geom_bar(stat="identity",position="dodge")
 
 #Now for percentage plot
 
-basicCC <- ggplot(LGBTQ,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC <- ggplot(gay,aes(x=infected,y=prcnt*100,fill=treatment)) 
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
 
-
+## Numerical Results
 ```{r}
 table3 <- xtabs(~treatment + infected, data=LGBTQdata)
 rowPerc(table3)
@@ -176,11 +210,78 @@ colPerc(table3)
 print(table3)
 ```
 
+## Infraretial 
 ```{r}
 chisq.test(table3)
 chisqtestGC(table3)
-fisher.test(table3)
+LGBTQfish <- fisher.test(table3)
+LGBTQfish
 ```
 
-# Drug Users "Drug User = yes"
+this data shows that the covid vaccine is not effective in the LGBTQ population. 
 
+```{r}
+effect <- LGBTQfish$p.value/(LGBTQfish$p.value  +1)
+effectivenessLGBTQ = LGBTQfish$estimate/(LGBTQfish$estimate+1)
+print(effectivenessLGBTQ*100)
+```
+
+```{r}
+low=(LGBTQfish$conf.int[1]/(LGBTQfish$conf.int[1] +1))
+hi=(LGBTQfish$conf.int[2]/(LGBTQfish$conf.int[2] +1))
+options(digits=2)
+```
+
+## ## Effectiveness Confidence Interval `r low`  to `r hi`
+
+# People that are drugUsers
+
+## Barplot
+
+```{r}
+yes <- DrugUserdata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(yes,aes(x=infected,y= count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(yes,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+## Numerical Results
+
+```{r}
+table2 <- xtabs(~infected + treatment, data=Femaledata)
+rowPerc(table2)
+colPerc(table2)
+print(table2)
+```
+
+## Infrarertial 
+
+```{r}
+chisq.test(table2)
+chisqtestGC(table2)
+galsfish <- fisher.test(table2)
+galsfish
+```
+
+
+```{r}
+effect <- galsfish$p.value/(galsfish$p.value  +1)
+effectivenessgal = galsfish$estimate/(galsfish$estimate+1)
+print(effectivenessgal*100)
+```
+
+```{r}
+low=(galsfish$conf.int[1]/(galsfish$conf.int[1] +1))
+hi=(galsfish$conf.int[2]/(galsfish$conf.int[2] +1))
+options(digits=2)
+```
+
+## ## Effectiveness Confidence Interval `r low`  to `r hi`
