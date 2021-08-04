@@ -1,6 +1,6 @@
 ---
 title: "Snippets"
-author: "Dr K"
+author: "Michael Abdalla"
 output: 
   html_document:
     number_sections: true
@@ -106,6 +106,8 @@ $H_0$ the null hypothesis is that the vaccine makes no difference in males when 
 $H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not a male contracts covid-19.
 
 we will reject the null hypothesis. 
+ 
+the vaccine has 40% effectivness which in not effective for the males. 
 
 
 ```{r}
@@ -155,7 +157,7 @@ colPerc(table2)
 print(table2)
 ```
 
-this table shows that about 607 males were infected with covid-19 out of 8,606 females. this table also shows that 4.7% of the females who have received the drug contracted covid-19 while 8.7% of the females who received the placebo contracted covid-19 as well as the table shows that females who got the covid vaccine were almost 67% less likely to contract covid. that shows that the vaccine is effective for Females.
+this table shows that about 607 females were infected with covid-19 out of 8,606 females. this table also shows that 4.7% of the females who have received the drug contracted covid-19 while 8.7% of the females who received the placebo contracted covid-19 as well as the table shows that females who got the covid vaccine were almost 67% less likely to contract covid. that shows that the vaccine is effective for Females.
 
 ## Infrarertial 
 
@@ -212,24 +214,34 @@ basicCC <- ggplot(gay,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
+the barchart is showing from the LGBTQs who were infected with covid19 almost 70% were given the drug and about 30% received the placebo.
 
 ## Numerical Results
 ```{r}
-table3 <- xtabs(~treatment + infected, data=LGBTQdata)
-rowPerc(table3)
-colPerc(table3)
-print(table3)
+table4 <- xtabs(~treatment + infected, data=LGBTQdata)
+rowPerc(table4)
+colPerc(table4)
+print(table4)
 ```
+
+this table shows that about 116 LGBTQs were infected with covid-19 out of 1,926 LGBTQs. this table also shows that 70% of the LGBTQs who have received the drug contracted covid-19 while 30% of the LGBTQs who received the placebo contracted covid-19 as well as the table shows that LGBTQs who got the covid vaccine were almost 29% more likely to contract covid and because it's less that 60% that shows that the vaccine is not effective for LGBTQs.
 
 ## Infraretial 
 ```{r}
-chisq.test(table3)
-chisqtestGC(table3)
-LGBTQfish <- fisher.test(table3)
+chisq.test(table4)
+chisqtestGC(table4)
+LGBTQfish <- fisher.test(table4)
 LGBTQfish
 ```
 
-this data shows that the covid vaccine is not effective in the LGBTQ population. 
+the p-value is a very tiny number. 
+$H_0$ the null hypothesis is that the vaccine makes no difference in LGBTQs when it comes to contracting the covid-19.
+
+$H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not the LGBTQs contract covid-19.
+
+we will reject the null hypothesis.
+
+this data shows that the covid vaccine is not effective in the LGBTQ population because it has an effectiveness rate of 29% which is not effective for the LGBTQs. 
 
 ```{r}
 effect <- LGBTQfish$p.value/(LGBTQfish$p.value  +1)
@@ -293,7 +305,7 @@ $H_0$ the alternative hypothesis is that the vaccine in fact makes a difference 
 
 we will reject the null hypothesis. 
 
-the vaccine is effective for drug users to be taken, because it is 65% effective and it's more than 60% which is effective as well as the odds ratio is 1.8. 
+the vaccine is effective for drug users to be taken, because it is 65% effective and it's more than 60% which is effective. 
 
 
 ```{r}
@@ -312,4 +324,4 @@ options(digits=2)
 
 # Discussions and Conclusions 
 
-after viewing the four populations we found that 
+after viewing the four populations we found that there were two populations who had the most effectiveness rate, they were the Females with effectiveness rate of 67% and the drug users with effectiveness rate of 65% and on the other hand we have the males and the LGBTQS populations who have proven that the vaccine is not effective for them the males showed 40% effectiveness rate and the LGBTQS showed 29% effectiveness rate.
