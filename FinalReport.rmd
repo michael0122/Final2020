@@ -76,7 +76,7 @@ basicCC <- ggplot(guy,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
-the barchart is showing from he males who were infected with covid19 almost 58% were given the drug and about 42% received the placebo 
+the barchart is showing from the males who were infected with covid19 almost 58% were given the drug and about 42% received the placebo.
 
 
 ## Numerical Results    
@@ -88,7 +88,7 @@ colPerc(table1)
 print(table1)
 ```
 
-this table shows that about 340 males were infected with covid-19 out of 10,450 males. this table also shows that 3.7% of the males who have received the drug contracted covid-19 while 2.5% of the males who received the placebo contracted covid-19 as well as the table shows that males who got the covid vaccine were almost 50% were more likly to contract covid and because it's less that 60% that shows that the vaccine is not effective for males.
+this table shows that about 340 males were infected with covid-19 out of 10,450 males. this table also shows that 3.7% of the males who have received the drug contracted covid-19 while 2.5% of the males who received the placebo contracted covid-19 as well as the table shows that males who got the covid vaccine were almost 50% more likely to contract covid and because it's less that 60% that shows that the vaccine is not effective for males.
 
 
 ## Inferarential    
@@ -100,7 +100,7 @@ guysfish <- fisher.test(table1)
 guysfish
 ```
 
-since the p-value is a very tiny number 
+the p-value is a very tiny number. 
 $H_0$ the null hypothesis is that the vaccine makes no difference in males when it comes to contracting the covid-19.
 
 $H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not a male contracts covid-19.
@@ -144,6 +144,8 @@ basicCC <- ggplot(gal,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
+the barchart is showing from the females who were infected with covid19 almost 34% were given the drug and about 66% received the placebo.
+
 ## Numerical Results 
 
 ```{r}
@@ -152,6 +154,8 @@ rowPerc(table2)
 colPerc(table2)
 print(table2)
 ```
+
+this table shows that about 607 males were infected with covid-19 out of 8,606 females. this table also shows that 4.7% of the females who have received the drug contracted covid-19 while 8.7% of the females who received the placebo contracted covid-19 as well as the table shows that females who got the covid vaccine were almost 67% less likely to contract covid. that shows that the vaccine is effective for Females.
 
 ## Infrarertial 
 
@@ -162,7 +166,14 @@ galsfish <- fisher.test(table2)
 galsfish
 ```
 
-the vaccine is effective for gals to take the vaccine. 
+the p-value is a very tiny number 
+$H_0$ the null hypothesis is that the vaccine makes no difference in females when it comes to contracting the covid-19.
+
+$H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not a female contracts covid-19.
+
+we will reject the null hypothesis. 
+
+the vaccine is effective for females to be taken, because it is 67% effective and it's more than 60% which is effective. 
 
 ```{r}
 effect <- galsfish$p.value/(galsfish$p.value  +1)
@@ -253,35 +264,52 @@ basicCC <- ggplot(yes,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
+the barchart is showing out of 117 DrugUsers who were infected with covid19 almost 34% were given the drug and about 66% received the placebo.
+
 ## Numerical Results
 
 ```{r}
-table2 <- xtabs(~infected + treatment, data=Femaledata)
-rowPerc(table2)
-colPerc(table2)
-print(table2)
+table3 <- xtabs(~infected + treatment, data=DrugUserdata)
+rowPerc(table3)
+colPerc(table3)
+print(table3)
 ```
+
+this table shows that about 117 drug users were infected with covid-19 out of 2,166 drug users. this table also shows that 33% of the drug users who have received the drug contracted covid-19 while 67% of the drug users who received the placebo contracted covid-19 as well as the table shows that drug users who got the covid vaccine were almost 65% less likely to contract covid. that shows that the vaccine is effective for drug users.
 
 ## Infrarertial 
 
 ```{r}
-chisq.test(table2)
-chisqtestGC(table2)
-galsfish <- fisher.test(table2)
-galsfish
+chisq.test(table3)
+chisqtestGC(table3)
+yesfish <- fisher.test(table3)
+yesfish
 ```
+
+the p-value is a very tiny number 
+$H_0$ the null hypothesis is that the vaccine makes no difference in drug users when it comes to contracting the covid-19.
+
+$H_0$ the alternative hypothesis is that the vaccine in fact makes a difference in whether or not a drug user contracts covid-19.
+
+we will reject the null hypothesis. 
+
+the vaccine is effective for drug users to be taken, because it is 65% effective and it's more than 60% which is effective as well as the odds ratio is 1.8. 
 
 
 ```{r}
-effect <- galsfish$p.value/(galsfish$p.value  +1)
-effectivenessgal = galsfish$estimate/(galsfish$estimate+1)
-print(effectivenessgal*100)
+effect <- yesfish$p.value/(yesfish$p.value  +1)
+effectivenessyes = yesfish$estimate/(yesfish$estimate+1)
+print(effectivenessyes*100)
 ```
 
 ```{r}
-low=(galsfish$conf.int[1]/(galsfish$conf.int[1] +1))
-hi=(galsfish$conf.int[2]/(galsfish$conf.int[2] +1))
+low=(yesfish$conf.int[1]/(yesfish$conf.int[1] +1))
+hi=(yesfish$conf.int[2]/(yesfish$conf.int[2] +1))
 options(digits=2)
 ```
 
 ## ## Effectiveness Confidence Interval `r low`  to `r hi`
+
+# Discussions and Conclusions 
+
+after viewing the four populations we found that 
